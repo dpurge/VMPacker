@@ -1,0 +1,54 @@
+{
+    "builders": [{
+    
+        "name": "CentOS-7.0-x86_64-Minimal",
+        
+        "type": "virtualbox-iso",
+        "virtualbox_version_file": "/etc/virtualbox-version",
+        "headless": false,
+        "guest_os_type": "RedHat_64",
+        "disk_size": 61440,
+        "guest_additions_path": "/tmp/VBoxGuestAdditions.iso",
+
+        "vboxmanage": [
+            ["modifyvm", "{{.Name}}", "--memory", "2048"],
+            ["modifyvm", "{{.Name}}", "--cpus", "1"],
+            ["modifyvm", "{{.Name}}", "--rtcuseutc", "on"],
+            ["modifyvm", "{{.Name}}", "--bioslogodisplaytime", "1"]
+        ],
+
+        "iso_url": "http://mirrors.kernel.org/centos/7/isos/x86_64/CentOS-7.0-1406-x86_64-Minimal.iso",
+        "iso_checksum": "495a7d50eb7633c4667fbfc5e817bf244697c627",
+        "iso_checksum_type": "sha1",
+
+        "boot_command": [
+            "<tab>",
+            " text",
+            " ks=http://{{.HTTPIP}}:{{.HTTPPort}}/CentOS-7.0-x86_64-Minimal.cfg",
+            "<enter>",
+            "<wait>"
+        ],
+        "boot_wait": "5s",
+
+        "http_directory": "http",
+
+        "ssh_username": "root",
+        "ssh_password": "vagrant",
+        "ssh_port": 22,
+        "ssh_wait_timeout": "20m",
+
+        "shutdown_command": "systemctl poweroff"
+    }],
+    "post-processors": [{
+        "output": "../../../build/CentOS-7.0-x86_64-Minimal.box",
+        "type": "vagrant"
+    }],
+    "provisioners": [{
+        "type": "shell",
+        "scripts": [
+            "script/vboxaddon.sh",
+            "script/vagrant.sh",
+            "script/compact.sh"
+        ]
+    }]
+}
