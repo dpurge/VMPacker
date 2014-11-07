@@ -1,7 +1,7 @@
 {
   "variables": {
     "iso_repo": "{{env `VAGRANT_ISO_REPO_URI`}}",
-    "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}",
+    "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}"
   },
   "builders": [
     {
