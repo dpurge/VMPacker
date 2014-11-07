@@ -1,0 +1,88 @@
+{
+  "variables": {
+    "iso_repo": "{{env `VAGRANT_ISO_REPO_URI`}}",
+    "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}",
+  },
+  "builders": [
+    {
+      "type": "vmware-iso",
+      "iso_url": "{{user `iso_repo`}}/en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "8dcde01d0da526100869e2457aafb7ca",
+      "headless": false,
+      "boot_wait": "2m",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "guest_os_type": "windows7srv-64",
+      "tools_upload_flavor": "windows",
+      "disk_size": 61440,
+      "vnc_port_min": 5900,
+      "vnc_port_max": 5980,
+      "floppy_files": [
+        "./answer/Windows2008R2-mini/Autounattend.xml",
+        "./script/msupdate.bat",
+        "./script/winupdate.ps1",
+        "./script/openssh.ps1"
+      ],
+      "vmx_data": {
+        "RemoteDisplay.vnc.enabled": "false",
+        "RemoteDisplay.vnc.port": "5900",
+        "memsize": "2048",
+        "numvcpus": "2",
+        "scsi0.virtualDev": "lsisas1068"
+      }
+    },
+    {
+      "type": "virtualbox-iso",
+      "iso_url": "{{user `iso_repo`}}/en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso",
+      "iso_checksum_type": "md5",
+      "iso_checksum": "8dcde01d0da526100869e2457aafb7ca",
+      "headless": false,
+      "boot_wait": "2m",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "guest_os_type": "Windows2008_64",
+      "disk_size": 61440,
+      "floppy_files": [
+        "./answer/Windows2008R2-mini/Autounattend.xml",
+        "./script/msupdate.bat",
+        "./script/winupdate.ps1",
+        "./script/openssh.ps1",
+        "./script/oracle-cert.cer"
+      ],
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "remote_path": "/tmp/script.bat",
+      "execute_command": "{{.Vars}} cmd /c C:/Windows/Temp/script.bat",
+      "scripts": [
+        "./script/vm-guest-tools.bat",
+        "./script/vagrant-ssh.bat",
+        "./script/enable-rdp.bat",
+        "./script/disable-auto-logon.bat"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [ "rm -rf /tmp/*" ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": false,
+      "output": "{{user `box_repo`}}/Windows2008R2-mini-{{.Provider}}.box",
+      "vagrantfile_template": "vagrant/Windows2008R2-mini.template"
+    }
+  ]
+}

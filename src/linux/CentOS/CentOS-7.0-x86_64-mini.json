@@ -1,7 +1,11 @@
 {
+    "variables": {
+        "iso_repo": "{{env `VAGRANT_ISO_REPO_URI`}}",
+        "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}",
+    },
     "builders": [{
     
-        "name": "CentOS-7.0-x86_64-Minimal",
+        "name": "CentOS-7.0-x86_64-mini",
         
         "type": "virtualbox-iso",
         "virtualbox_version_file": "/etc/virtualbox-version",
@@ -17,14 +21,14 @@
             ["modifyvm", "{{.Name}}", "--bioslogodisplaytime", "1"]
         ],
 
-        "iso_url": "http://mirrors.kernel.org/centos/7/isos/x86_64/CentOS-7.0-1406-x86_64-Minimal.iso",
+        "iso_url": "{{user `iso_repo`}}/CentOS-7.0-1406-x86_64-Minimal.iso",
         "iso_checksum": "495a7d50eb7633c4667fbfc5e817bf244697c627",
         "iso_checksum_type": "sha1",
 
         "boot_command": [
             "<tab>",
             " text",
-            " ks=http://{{.HTTPIP}}:{{.HTTPPort}}/CentOS-7.0-x86_64-Minimal.cfg",
+            " ks=http://{{.HTTPIP}}:{{.HTTPPort}}/CentOS-7.0-x86_64-mini.cfg",
             "<enter>",
             "<wait>"
         ],
@@ -40,7 +44,7 @@
         "shutdown_command": "systemctl poweroff"
     }],
     "post-processors": [{
-        "output": "../../../build/CentOS-7.0-x86_64-Minimal.box",
+        "output": "{{user `box_repo`}}/CentOS-7.0-x86_64-mini-{{.Provider}}.box",
         "type": "vagrant"
     }],
     "provisioners": [{
