@@ -17,3 +17,11 @@ Package command:
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=vmware-iso Windows2008R2-mini.json
 
 Run command:
+
+* vagrant box add --name Windows2008R2-mini Windows2008R2-mini-virtualbox.box
+* vagrant init Windows2008R2-mini
+* vagrant up
+* vagrant rdp
+* vagrant halt
+* vagrant status
+* vagrant destroy --force
