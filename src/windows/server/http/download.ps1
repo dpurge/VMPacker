@@ -1,57 +1,93 @@
-param($box = "Windows2012R2-mini")
-
-$iso_repo=c:/jdp/dat/iso
-$box_repo=c:/jdp/dat/
-
-$LocalDir = `
-    [System.IO.Path]::GetDirectoryName(`
-        $myInvocation.MyCommand.Definition)
+param(
+    $box = "Windows7-mini",
+    $iso_repo = "c:/jdp/dat/iso"
+)
 
 $md5 = New-Object `
     -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
 
+# M I C R O S O F T  I S O  F I L E S
+
+$Windows7Iso = @{
+    filename = "SW_DVD5_Win_Pro_7w_SP1_64BIT_English_-2_MLF_X17-59279.ISO";
+    uri = "$iso_repo/SW_DVD5_Win_Pro_7w_SP1_64BIT_English_-2_MLF_X17-59279.ISO";
+    checksum = "3C394E66C208CFD641B976DE10FE90B5"}
+
+$Windows2008R2Iso = @{
+    filename = "en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso";
+    uri = "$iso_repo/en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso";
+    checksum = ""}
+
+$MSSQLServer2008R2 = @{
+    filename = "en_sql_server_2008_r2_developer_x86_x64_ia64_dvd_522665.iso";
+    uri = "$iso_repo/en_sql_server_2008_r2_developer_x86_x64_ia64_dvd_522665.iso";
+    checksum = ""}
+
+# C O M M O N  D E P E N D E N C I E S
+
+$VagrantSshKey = @{
+    filename = "authorized_keys";
+    uri = "https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub";
+    checksum = "B440B5086DD12C3FD8ABB762476B9F40"}
+
+$VBoxGuestAdditions = @{
+    filename = "VBoxGuestAdditions_5.0.14.iso";
+      uri = "http://download.virtualbox.org/virtualbox/5.0.14/VBoxGuestAdditions_5.0.14.iso";
+      checksum = "875B430362791ACDC5C9340220D39B75"}
+
+$OpenSsh = @{
+    filename = "setupssh-7.1p2-1.exe";
+    uri = "http://www.mls-software.com/files/setupssh-7.1p2-1.exe";
+    checksum = "7405ac2b8d90ab45ed1035493504d648"}
+
+$Zip7 = @{
+    filename = "7z1514-x64.msi";
+    uri = "http://7-zip.org/a/7z1514-x64.msi";
+    checksum = "B39617FD502261A29E33603760E33F3C"}
+
+$DotNet452 = @{
+    filename = "NDP452-KB2901907-x86-x64-AllOS-ENU.exe";
+    uri = "https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe";
+    checksum = "EE01FC4110C73A8E5EFC7CABDA0F5FF7"}
+
+$KB2819745 = @{
+    filename = "Windows6.1-KB2819745-x64-MultiPkg.msu";
+    uri = "http://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows6.1-KB2819745-x64-MultiPkg.msu";
+    checksum = "84497bdd99690c50a8e67db19b0aa2ad"}
+
+# I N S T A L L A T I O N  M E D I A
 $media = @{
 
+  "Windows7-mini" = @(
+    $Windows7Iso,
+    $VBoxGuestAdditions,
+    $VagrantSshKey,
+    $DotNet452,
+    $KB2819745,
+    $OpenSsh,
+    $Zip7
+  );
+
   "Windows2008R2-mini" = @(
-    #@{filename = "Windows2008R2_x64_eval.iso";
-    #  uri = "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso";
-    #  checksum = ""},
-    @{filename = "authorized_keys";
-      uri = "https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub";
-      checksum = "b440b5086dd12c3fd8abb762476b9f40"},
-    @{filename = "dotNetFx45_Full_x86_x64.exe";
-      uri = "http://download.microsoft.com/download/b/a/4/ba4a7e71-2906-4b2d-a0e1-80cf16844f5f/dotnetfx45_full_x86_x64.exe";
-      checksum = "d02dc8b69a702a47c083278938c4d2f1"},
-    @{filename = "Windows6.1-KB2819745-x64-MultiPkg.msu";
-      uri = "http://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows6.1-KB2819745-x64-MultiPkg.msu";
-      checksum = "84497bdd99690c50a8e67db19b0aa2ad"},
-    @{filename = "setupssh-6.6p1-1(x64).exe";
-      uri = "http://www.mls-software.com/files/setupssh-6.6p1-1(x64).exe";
-      checksum = "5fd16a392bb4601da80bb200ecb58e51"},
-    @{filename = "7z920-x64.msi";
-      uri = "http://sunet.dl.sourceforge.net/project/sevenzip/7-Zip/9.20/7z920-x64.msi";
-      checksum = "cac92727c33bec0a79965c61bbb1c82f"}
-    #@{filename = "vmware-tools.exe.tar";
-    #  uri = "http://softwareupdate.vmware.com/cds/vmw-desktop/ws/10.0.1/1379776/windows/packages/tools-windows-9.6.1.exe.tar";
-    #  checksum = "ce1392e127a51c5c44a1015caaffba0d"}
+    $Windows2008R2Iso,
+    $VBoxGuestAdditions,
+    $VagrantSshKey,
+    $DotNet452,
+    $KB2819745,
+    $OpenSsh,
+    $Zip7
   );
 
   "Windows2012R2-mini" = @(
-    @{filename = "authorized_keys";
-      uri = "https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub";
-      checksum = "b440b5086dd12c3fd8abb762476b9f40"},
-    @{filename = "setupssh-7.1p2-1.exe";
-      uri = "http://www.mls-software.com/files/setupssh-7.1p2-1.exe";
-      checksum = "7405ac2b8d90ab45ed1035493504d648"},
-    @{filename = "7z1514-x64.msi";
-      uri = "http://7-zip.org/a/7z1514-x64.msi";
-      checksum = "b39617fd502261a29e33603760e33f3c"},
-    @{filename = "VBoxGuestAdditions_5.0.14.iso";
-      uri = "http://download.virtualbox.org/virtualbox/5.0.14/VBoxGuestAdditions_5.0.14.iso";
-      checksum = "875b430362791acdc5c9340220d39b75"}
+    $VagrantSshKey,
+    $VBoxGuestAdditions,
+    $OpenSsh,
+    $Zip7
   )
 
 }
+
+# D O W N L O A D  F I L E S
 
 if ( -not $media.ContainsKey($box) ) {
     Throw "Unknown box: {0}" -F $box
@@ -60,7 +96,7 @@ if ( -not $media.ContainsKey($box) ) {
 foreach ($item in $media[$box]) {
 
     [System.IO.FileInfo] $ItemFile = `
-        "{0}\{1}" -F $LocalDir, $item.filename
+        "{0}\{1}" -F $PSScriptRoot, $item.filename
         
     if ($ItemFile.Exists) {
         Write-Host (`
@@ -72,10 +108,7 @@ foreach ($item in $media[$box]) {
     }
     
     Write-Host -n "Checksum: "
-    $hash = [System.BitConverter]::ToString(`
-        $md5.ComputeHash(`
-            [System.IO.File]::ReadAllBytes($ItemFile))).ToLower() `
-        -replace "-",""
+    $hash = (Get-FileHash $ItemFile -Algorithm MD5).Hash
     Write-Host -n "   $hash"
     if ($hash -eq $item.checksum) {
         Write-Host " [OK]" -F green

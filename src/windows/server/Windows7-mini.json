@@ -1,0 +1,53 @@
+{
+  "variables": {
+    "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-iso",
+      "iso_url": "./http/SW_DVD5_Win_Pro_7w_SP1_64BIT_English_-2_MLF_X17-59279.ISO",
+      "iso_checksum_type": "none",
+      "iso_checksum": "",
+      "headless": false,
+      "boot_wait": "2m",
+      "http_directory": "http",
+      "http_port_min":"8080",
+      "http_port_max":"8080",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "2h",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "guest_os_type": "Windows7_64",
+      "disk_size": 61440,
+      "floppy_files": [
+        "./floppy/Windows7-mini/Autounattend.xml",
+        "./floppy/Windows7-mini/Install.ps1",
+        "./floppy/Common/InstallHelpers.psm1",
+        "./floppy/VirtualBox/VMParams.ps1",
+        "./floppy/VirtualBox/VMInstall.ps1"
+      ],
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "1" ]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [ "cmd.exe /c powershell.exe -File A:/VMInstall.ps1" ]
+    },
+    {
+      "type": "shell",
+      "inline": [ "rm -rf /tmp/*" ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": false,
+      "output": "{{user `box_repo`}}/Windows7-mini-{{.Provider}}.box",
+      "vagrantfile_template": "vagrant/Windows7-mini.template"
+    }
+  ]
+}
