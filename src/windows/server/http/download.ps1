@@ -1,4 +1,7 @@
-param($box = "Windows2008R2-mini")
+param($box = "Windows2012R2-mini")
+
+$iso_repo=c:/jdp/dat/iso
+$box_repo=c:/jdp/dat/
 
 $LocalDir = `
     [System.IO.Path]::GetDirectoryName(`
@@ -8,6 +11,7 @@ $md5 = New-Object `
     -TypeName System.Security.Cryptography.MD5CryptoServiceProvider
 
 $media = @{
+
   "Windows2008R2-mini" = @(
     #@{filename = "Windows2008R2_x64_eval.iso";
     #  uri = "http://download.microsoft.com/download/7/5/E/75EC4E54-5B02-42D6-8879-D8D3A25FBEF7/7601.17514.101119-1850_x64fre_server_eval_en-us-GRMSXEVAL_EN_DVD.iso";
@@ -30,7 +34,23 @@ $media = @{
     #@{filename = "vmware-tools.exe.tar";
     #  uri = "http://softwareupdate.vmware.com/cds/vmw-desktop/ws/10.0.1/1379776/windows/packages/tools-windows-9.6.1.exe.tar";
     #  checksum = "ce1392e127a51c5c44a1015caaffba0d"}
+  );
+
+  "Windows2012R2-mini" = @(
+    @{filename = "authorized_keys";
+      uri = "https://raw.githubusercontent.com/mitchellh/vagrant/master/keys/vagrant.pub";
+      checksum = "b440b5086dd12c3fd8abb762476b9f40"},
+    @{filename = "setupssh-7.1p2-1.exe";
+      uri = "http://www.mls-software.com/files/setupssh-7.1p2-1.exe";
+      checksum = "7405ac2b8d90ab45ed1035493504d648"},
+    @{filename = "7z1514-x64.msi";
+      uri = "http://7-zip.org/a/7z1514-x64.msi";
+      checksum = "b39617fd502261a29e33603760e33f3c"},
+    @{filename = "VBoxGuestAdditions_5.0.14.iso";
+      uri = "http://download.virtualbox.org/virtualbox/5.0.14/VBoxGuestAdditions_5.0.14.iso";
+      checksum = "875b430362791acdc5c9340220d39b75"}
   )
+
 }
 
 if ( -not $media.ContainsKey($box) ) {

@@ -13,6 +13,10 @@ Get-InstallFile `
     -OutputDirectory $WorkDir
     
 certutil -addstore -f "TrustedPublisher" $WorkDir\oracle-cert.cer
-& "C:\Program Files\7-Zip\7z.exe" x C:\Users\vagrant\VBoxGuestAdditions.iso -oC:\Install\virtualbox
-Remove-Item C:\Users\vagrant\VBoxGuestAdditions.iso -Force
-& "$WorkDir\virtualbox\VBoxWindowsAdditions.exe" /S
+
+$DrivesBeforeMount = (Get-Volume).DriveLetter
+
+Mount-DiskImage -ImagePath C:\Users\vagrant\VBoxGuestAdditions.iso
+$MountedDrive = Compare $DrivesBeforeMount (Get-Volume).DriveLetter -Passthru
+& "${MountedDrive}:\VBoxWindowsAdditions.exe" /S
+Dismount-DiskImage -ImagePath C:\Users\vagrant\VBoxGuestAdditions.iso
