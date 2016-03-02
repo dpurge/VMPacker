@@ -7,10 +7,13 @@ VMPacker
 
 Boxes:
 
-* CentOS 7.0 Linux (mini) 64-bit
-* Windows 7       (mini) 64-bit
-* Windows 2008 R2 (mini) 64-bit
-* Windows 2012 R2 (mini) 64-bit
+* CentOS 7.0 Linux (mini)
+* Windows 7       (mini)
+* Windows 2008 R2 (mini)
+* Windows 2012 R2 (mini)
+
+Current precise versions to be checked in the installation scripts.
+English 64-bit versions of the applications used whenever available.
 
 Get installation files:
 
@@ -32,8 +35,18 @@ Package command:
 
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mini.json
 
-Windows 7 (mini) 64-bit
+Windows 7 (mini)
 ---
+
+Contents:
+
+* Windows 7 Professional
+* DotNet Framework
+* Powershell 4
+* OpenSSH
+* 7-zip
+
+Build:
 
 * Set the key in ./src/windows/floppy/Windows7-mini/Autounattend.xml
 * cd ./src/windows/server
@@ -42,6 +55,13 @@ Windows 7 (mini) 64-bit
 
 Windows 7 (devbox) 64-bit
 ---
+
+Contents on top of Windows 7 (mini):
+
+* Microsoft SQL Server 2008 R2
+* Visual Studio Premium 2013
+
+Build:
 
 TODO
 
