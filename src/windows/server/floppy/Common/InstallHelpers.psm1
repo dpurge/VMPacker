@@ -31,7 +31,7 @@ function Invoke-InitialSystemConfiguration {
     -Name HideFileExt `
     -Type DWord `
     -Value 0 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Enable QuickEdit mode ..."
   New-Item `
@@ -39,7 +39,7 @@ function Invoke-InitialSystemConfiguration {
     -Name QuickEdit `
     -Type DWord `
     -Value 1 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Show Run command in Start Menu ..."
   New-Item `
@@ -47,7 +47,7 @@ function Invoke-InitialSystemConfiguration {
     -Name Start_ShowRun `
     -Type DWord `
     -Value 1 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Show Administrative Tools in Start Menu ..."
   New-Item `
@@ -55,7 +55,7 @@ function Invoke-InitialSystemConfiguration {
     -Name StartMenuAdminTools `
     -Type DWord `
     -Value 1 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Zero Hibernation File ..."
   New-Item `
@@ -63,7 +63,7 @@ function Invoke-InitialSystemConfiguration {
     -Name HibernateFileSizePercent `
     -Type DWord `
     -Value 0 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Disable Hibernation Mode ..."
   New-Item `
@@ -71,7 +71,7 @@ function Invoke-InitialSystemConfiguration {
     -Name HibernateEnabled `
     -Type DWord `
     -Value 0 `
-    –Force | Out-Null
+    -Force | Out-Null
 
   Write-Host "Enable remote desktop ..."
   New-Item `
@@ -79,7 +79,7 @@ function Invoke-InitialSystemConfiguration {
     -Name fDenyTSConnections `
     -Type DWord `
     -Value 0 `
-    –Force | Out-Null
+    -Force | Out-Null
   netsh advfirewall firewall add rule name="Open Port 3389" dir=in action=allow protocol=TCP localport=3389
 
   Write-Host "Disable auto-logon ..."
@@ -88,7 +88,7 @@ function Invoke-InitialSystemConfiguration {
     -Name AutoAdminLogon `
     -Type DWord `
     -Value 0 `
-    –Force | Out-Null
+    -Force | Out-Null
 
 }
 
@@ -235,5 +235,5 @@ function Install-OpenSSH {
 
 #=================================================
 
-Export-ModuleMember –Function @(`
-    Get-Command –Module $ExecutionContext.SessionState.Module)
+Export-ModuleMember -Function @(`
+    Get-Command -Module $ExecutionContext.SessionState.Module)

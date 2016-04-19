@@ -1,8 +1,8 @@
 VMPacker
 ========
 
-[VirtualBox](http://virtualbox.org) 5.0.14
-[Packer](http://packer.io) 0.8.6
+[VirtualBox](http://virtualbox.org) 5.0.18-106667
+[Packer](http://packer.io) 0.10.0
 [Vagrant](http://vagrantup.com) 1.8.1
 
 Boxes:

@@ -1,5 +1,5 @@
 param(
-    $box = "Windows7-mini",
+    $box = "Windows2012R2-mini",
     $iso_repo = "c:/jdp/dat/iso"
 )
 
@@ -31,14 +31,14 @@ $VagrantSshKey = @{
     checksum = "B440B5086DD12C3FD8ABB762476B9F40"}
 
 $VBoxGuestAdditions = @{
-    filename = "VBoxGuestAdditions_5.0.14.iso";
-      uri = "http://download.virtualbox.org/virtualbox/5.0.14/VBoxGuestAdditions_5.0.14.iso";
-      checksum = "875B430362791ACDC5C9340220D39B75"}
+    filename = "VBoxGuestAdditions_5.0.18.iso";
+      uri = "http://download.virtualbox.org/virtualbox/5.0.18/VBoxGuestAdditions_5.0.18.iso";
+      checksum = "C7F9DFF1F996630A5EAB9AFFBE27FEBD"}
 
 $OpenSsh = @{
-    filename = "setupssh-7.1p2-1.exe";
-    uri = "http://www.mls-software.com/files/setupssh-7.1p2-1.exe";
-    checksum = "7405ac2b8d90ab45ed1035493504d648"}
+    filename = "setupssh-7.2p2-1-v1.exe";
+    uri = "http://www.mls-software.com/files/setupssh-7.2p2-1-v1.exe";
+    checksum = "E5D08D7CDE2912440B13859F8919B696"}
 
 $Zip7 = @{
     filename = "7z1514-x64.msi";
@@ -54,6 +54,11 @@ $KB2819745 = @{
     filename = "Windows6.1-KB2819745-x64-MultiPkg.msu";
     uri = "http://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows6.1-KB2819745-x64-MultiPkg.msu";
     checksum = "84497bdd99690c50a8e67db19b0aa2ad"}
+
+$KB3134759 = @{
+    filename = "W2K12-KB3134759-x64.msu";
+    uri = "https://download.microsoft.com/download/2/C/6/2C6E1B4A-EBE5-48A6-B225-2D2058A9CEFB/W2K12-KB3134759-x64.msu";
+    checksum = "5EB7D8A18782DE05B23DFA91A9FB5B3F"}
 
 # I N S T A L L A T I O N  M E D I A
 $media = @{
@@ -82,7 +87,8 @@ $media = @{
     $VagrantSshKey,
     $VBoxGuestAdditions,
     $OpenSsh,
-    $Zip7
+    $Zip7,
+    $KB3134759
   )
 
 }
