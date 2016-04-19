@@ -20,8 +20,3 @@ Mount-DiskImage -ImagePath $WorkDir\VBoxGuestAdditions_5.0.18.iso
 $MountedDrive = Compare $DrivesBeforeMount (Get-Volume).DriveLetter -Passthru
 & "${MountedDrive}:\VBoxWindowsAdditions.exe" /S
 Dismount-DiskImage -ImagePath $WorkDir\VBoxGuestAdditions_5.0.18.iso
-
-# Switch to Mount-DiskImage when Win7/2008R2 no longer needed
-#& "C:\Program Files\7-Zip\7z.exe" x "$WorkDir\VBoxGuestAdditions_5.0.14.iso" -o"$WorkDir\virtualbox"
-#Remove-Item "$WorkDir\VBoxGuestAdditions_5.0.14.iso" -Force
-#& "$WorkDir\virtualbox\VBoxWindowsAdditions.exe" /S
