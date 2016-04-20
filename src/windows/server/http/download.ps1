@@ -8,11 +8,6 @@ $md5 = New-Object `
 
 # M I C R O S O F T  I S O  F I L E S
 
-$Windows7Iso = @{
-    filename = "SW_DVD5_Win_Pro_7w_SP1_64BIT_English_-2_MLF_X17-59279.ISO";
-    uri = "$iso_repo/SW_DVD5_Win_Pro_7w_SP1_64BIT_English_-2_MLF_X17-59279.ISO";
-    checksum = "3C394E66C208CFD641B976DE10FE90B5"}
-
 $Windows2008R2Iso = @{
     filename = "en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso";
     uri = "$iso_repo/en_windows_server_2008_r2_standard_enterprise_datacenter_and_web_with_sp1_x64_dvd_617601.iso";
@@ -45,16 +40,6 @@ $Zip7 = @{
     uri = "http://7-zip.org/a/7z1514-x64.msi";
     checksum = "B39617FD502261A29E33603760E33F3C"}
 
-$DotNet452 = @{
-    filename = "NDP452-KB2901907-x86-x64-AllOS-ENU.exe";
-    uri = "https://download.microsoft.com/download/E/2/1/E21644B5-2DF2-47C2-91BD-63C560427900/NDP452-KB2901907-x86-x64-AllOS-ENU.exe";
-    checksum = "EE01FC4110C73A8E5EFC7CABDA0F5FF7"}
-
-$KB2819745 = @{
-    filename = "Windows6.1-KB2819745-x64-MultiPkg.msu";
-    uri = "http://download.microsoft.com/download/3/D/6/3D61D262-8549-4769-A660-230B67E15B25/Windows6.1-KB2819745-x64-MultiPkg.msu";
-    checksum = "84497bdd99690c50a8e67db19b0aa2ad"}
-
 $KB3134759 = @{
     filename = "W2K12-KB3134759-x64.msu";
     uri = "https://download.microsoft.com/download/2/C/6/2C6E1B4A-EBE5-48A6-B225-2D2058A9CEFB/W2K12-KB3134759-x64.msu";
@@ -62,26 +47,6 @@ $KB3134759 = @{
 
 # I N S T A L L A T I O N  M E D I A
 $media = @{
-
-  "Windows7-mini" = @(
-    $Windows7Iso,
-    $VBoxGuestAdditions,
-    $VagrantSshKey,
-    $DotNet452,
-    $KB2819745,
-    $OpenSsh,
-    $Zip7
-  );
-
-  "Windows2008R2-mini" = @(
-    $Windows2008R2Iso,
-    $VBoxGuestAdditions,
-    $VagrantSshKey,
-    $DotNet452,
-    $KB2819745,
-    $OpenSsh,
-    $Zip7
-  );
 
   "Windows2012R2-mini" = @(
     $VagrantSshKey,

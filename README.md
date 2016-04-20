@@ -8,8 +8,6 @@ VMPacker
 Boxes:
 
 * CentOS 7.0 Linux (mini)
-* Windows 7       (mini)
-* Windows 2008 R2 (mini)
 * Windows 2012 R2 (mini)
 
 Current precise versions to be checked in the installation scripts.
@@ -29,66 +27,8 @@ For windows, remeber to set the key in the Autounattend file.
 Package command:
 
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant CentOS-7.0-x86_64-mini.json
-
-* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2008R2-mini.json
-* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=vmware-iso Windows2008R2-mini.json
-
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mini.json
 
-Windows 7 (mini)
----
-
-Contents:
-
-* Windows 7 Professional
-* DotNet Framework
-* Powershell 4
-* OpenSSH
-* 7-zip
-
-Build:
-
-* Set the key in ./src/windows/floppy/Windows7-mini/Autounattend.xml
-* cd ./src/windows/server
-* ./http/download.ps1 -box Windows7-mini -iso_repo c:/jdp/dat/iso
-* packer build --var box_repo=c:/jdp/dat/vagrant Windows7-mini.json
-
-Windows 7 (devbox) 64-bit
----
-
-Contents on top of Windows 7 (mini):
-
-* Microsoft SQL Server 2008 R2
-* Visual Studio Premium 2013
-
-Build:
-
-TODO
-
-Windows 2008 R2 (mini) 64-bit
----
-
-TODO
-
-Windows 8.1 (mini) 64-bit
----
-
-TODO
-
-Windows 8.1 (devbox) 64-bit
----
-
-TODO
-
-Windows 2012 R2 (mini) 64-bit
----
-
-TODO
-
-Windows 2012 R2 (tfssrv) 64-bit
----
-
-TODO
 
 Run the box
 ---
