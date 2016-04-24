@@ -28,9 +28,9 @@ Package command:
 
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant CentOS-7.0-x86_64-mini.json
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mini.json
+* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-ovf Windows2012R2-mssql.json
+* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --var box_base_name=mssql --var box_output_name=tfs Windows2012R2-tinker.json
 
-* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mssql.json
-* packer build --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-ovf Windows2012R2-tfs.json
 * packer build --var box_repo=c:/jdp/dat/vagrant --var box_name=mini Windows2012R2-tinker.json
 
 
@@ -55,7 +55,9 @@ C:\"Program Files"\Oracle\VirtualBox\VBoxManage.exe createhd --filename C:\jdp\d
 
 vagrant package –base VM_NAME_IN_VIRTUALBOX –output LOCATION_BOX_FILE
 
-Add in the configuration section of the vagrant file:
+You can use the environment variable VAGRANT_HOME to specify the location of .vagrant.d
+
+Add the configuration section of the vagrant file:
 
 Vagrant.configure("2") do |config|
     ...
@@ -66,7 +68,6 @@ Vagrant.configure("2") do |config|
 
     config.vm.provider :virtualbox do |v, override|
         ...
-        v.gui = true
         v.name = "Win2012R2mini"
 
         # Add DVD drive
@@ -80,3 +81,12 @@ Vagrant.configure("2") do |config|
         end
     end
 end
+
+
+netsh advfirewall firewall add rule name="HTTP 80" dir=in action=allow protocol=TCP localport=80
+
+netsh advfirewall firewall add rule name="HTTPS 443" dir=in action=allow protocol=TCP localport=443
+
+netsh advfirewall firewall add rule name="HTTP 8080" dir=in action=allow protocol=TCP localport=8080
+
+Add-WindowsFeature Web-Basic-Auth

@@ -4,8 +4,8 @@
 Vagrant.require_version ">= 1.8.1"
 
 Vagrant.configure("2") do |config|
-    config.vm.define "Windows2012R2-mini"
-    config.vm.box = "Windows2012R2-mini"
+    config.vm.define "Windows2012R2-mssql"
+    config.vm.box = "Windows2012R2-mssql"
     config.vm.communicator = "winrm"
 
     # Admin user name and password
@@ -19,8 +19,15 @@ Vagrant.configure("2") do |config|
     config.vm.network :forwarded_port, guest: 3389, host: 13389, id: "rdp", auto_correct: true
     config.vm.network :forwarded_port, guest: 22, host: 10022, id: "ssh", auto_correct: true
 
+    config.vm.network :forwarded_port, guest: 1433, host: 11433, id: "ssh", auto_correct: true
+    config.vm.network :forwarded_port, guest: 1434, host: 11434, id: "ssh", auto_correct: true
+    config.vm.network :forwarded_port, guest: 4022, host: 14022, id: "ssh", auto_correct: true
+    config.vm.network :forwarded_port, guest: 135, host: 10135, id: "ssh", auto_correct: true
+    config.vm.network :forwarded_port, guest: 2383, host: 12383, id: "ssh", auto_correct: true
+    config.vm.network :forwarded_port, guest: 2382, host: 12382, id: "ssh", auto_correct: true
+
     config.vm.provider :virtualbox do |v, override|
-        v.gui = true,
+        v.gui = true
         v.customize ["modifyvm", :id, "--vram", 24]
         v.customize ["modifyvm", :id, "--memory", 4096]
         v.customize ["modifyvm", :id, "--cpus", 2]

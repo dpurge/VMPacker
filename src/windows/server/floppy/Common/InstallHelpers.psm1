@@ -1,7 +1,7 @@
 function Enable-WindowsRemoting {                
     Write-Host "Configuring Windows remoting ..." 
-    winrm quickconfig -q
-    winrm quickconfig -transport:http
+    # winrm quickconfig -q
+    # winrm quickconfig -transport:http
     winrm set winrm/config '@{MaxTimeoutms="1800000"}'
     winrm set winrm/config/winrs '@{MaxMemoryPerShellMB="300"}'
     winrm set winrm/config/service '@{AllowUnencrypted="true"}'

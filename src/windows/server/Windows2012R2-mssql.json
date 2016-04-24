@@ -1,0 +1,48 @@
+{
+  "variables": {
+    "iso_repo": "{{env `VAGRANT_ISO_REPO_URI`}}",
+    "box_repo": "{{env `VAGRANT_BOX_REPO_URI`}}"
+  },
+  "builders": [
+    {
+      "type": "virtualbox-ovf",
+      "source_path": "{{user `box_repo`}}/Windows2012R2-mini-virtualbox/box.ovf",
+      "headless": false,
+      "boot_wait": "2m",
+      "http_directory": "http",
+      "http_port_min":"8080",
+      "http_port_max":"8080",
+      "ssh_username": "vagrant",
+      "ssh_password": "vagrant",
+      "ssh_wait_timeout": "2h",
+      "guest_additions_mode": "disable",
+      "shutdown_command": "shutdown /s /t 10 /f /d p:4:1 /c \"Packer Shutdown\"",
+      "floppy_files": [
+        "./floppy/Common/InstallHelpers.psm1",
+        "./floppy/VirtualBox/VMParams.ps1",
+        "./floppy/Windows2012R2/MSSqlServer.ini",
+        "./floppy/Windows2012R2/Install-MSSQL.ps1"
+      ],
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--vram", "24"],
+        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+        [ "modifyvm", "{{.Name}}", "--cpus", "2" ],
+        [ "storageattach", "{{.Name}}", "--storagectl", "IDE Controller", "--port", "0", "--device", "1", "--type", "dvddrive", "--medium", "{{user `iso_repo`}}/en_sql_server_2014_developer_edition_x64_dvd_3940406.iso"]
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [ "cmd.exe /c powershell.exe -File A:/Install-MSSQL.ps1" ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": false,
+      "output": "{{user `box_repo`}}/Windows2012R2-mssql-{{.Provider}}.box",
+      "vagrantfile_template": "vagrant/Windows2012R2-mssql.template"
+    }
+  ]
+}

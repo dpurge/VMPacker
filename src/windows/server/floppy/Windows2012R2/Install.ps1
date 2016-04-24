@@ -21,10 +21,11 @@ Invoke-InitialSystemConfiguration
 Install-WindowsFeature -name NET-Framework-Core -source D:\sources\sxs
 
 Invoke-WinMSIInstall -Installer "$WorkDir\PackageManagement_x64.msi"
+Enable-WSManCredSSP -Force -Role Server
 
-Start-Sleep -s 10
-Get-PackageProvider -Name NuGet -ForceBootstrap
-Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+#Start-Sleep -s 10
+#Get-PackageProvider -Name NuGet -ForceBootstrap
+#Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
 
 Write-Host "Installing OpenSSH ..."
 Install-OpenSSH `
@@ -34,6 +35,7 @@ Invoke-VagrantConfiguration -SSHKeyFile "$WorkDir\authorized_keys"
 
 Remove-InstallFile -FileList $InstallFiles -OutputDirectory $WorkDir
 
+Dism.exe /online /Cleanup-Image /StartComponentCleanup /ResetBase
 Set-Service wuauserv -startupType Disabled
 Stop-Service wuauserv
 
