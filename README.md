@@ -29,6 +29,10 @@ Package command:
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant CentOS-7.0-x86_64-mini.json
 * packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mini.json
 
+* packer build --var iso_repo=c:/jdp/dat/iso --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-iso Windows2012R2-mssql.json
+* packer build --var box_repo=c:/jdp/dat/vagrant --only=virtualbox-ovf Windows2012R2-tfs.json
+* packer build --var box_repo=c:/jdp/dat/vagrant --var box_name=mini Windows2012R2-tinker.json
+
 
 Run the box
 ---
@@ -42,3 +46,37 @@ Run the box
 * vagrant destroy --force
 * vagrant box list
 * vagrant box remove Windows2012R2-mini
+
+
+Other
+---
+
+C:\"Program Files"\Oracle\VirtualBox\VBoxManage.exe createhd --filename C:\jdp\dat\vagrant\Windows2012R2-mini-virtualbox\virtualbox-mini-data-disk2.vmdk --size 62914560
+
+vagrant package –base VM_NAME_IN_VIRTUALBOX –output LOCATION_BOX_FILE
+
+Add in the configuration section of the vagrant file:
+
+Vagrant.configure("2") do |config|
+    ...
+
+    config.vm.network :forwarded_port, guest: 443, host: 10443, id: "https", auto_correct: true
+    config.vm.network :forwarded_port, guest: 80, host: 10080, id: "http", auto_correct: true
+    config.vm.network :forwarded_port, guest: 8080, host: 18080, auto_correct: true
+
+    config.vm.provider :virtualbox do |v, override|
+        ...
+        v.gui = true
+        v.name = "Win2012R2mini"
+
+        # Add DVD drive
+        v.customize ['storageattach', :id, '--storagectl', 'IDE Controller', '--port', 0, '--device', 1, '--type', 'dvddrive', '--medium', 'emptydrive']
+
+        # Add second disk for data
+        data_disk = File.realpath( "." ).to_s + "/.vagrant/data_disk.vdi"
+        if ARGV[0] == "up" &&  ! File.exist?(data_disk)
+            v.customize ['createhd', '--filename', data_disk, '--size', 60 * 1024]
+            v.customize ['storageattach', :id, '--storagectl', 'IDE Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', data_disk]
+        end
+    end
+end

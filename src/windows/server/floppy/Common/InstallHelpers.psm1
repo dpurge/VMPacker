@@ -9,87 +9,63 @@ function Enable-WindowsRemoting {
     winrm set winrm/config/client/auth '@{Basic="true"}'
     winrm set winrm/config/listener?Address=*+Transport=HTTP '@{Port="5985"}'
 
+    Write-Host "Adding * to WinRM trusted hosts ..."
+    winrm set winrm/config/client '@{TrustedHosts="*"}'
+
     Write-Host "Add firewall rule for WinRM ..." 
-    netsh advfirewall firewall set rule group="remote administration" new enable=yes
+    netsh advfirewall firewall set rule group="Windows Remote Administration" new enable=yes
+
     Write-Host "Open WinRM port in firewall ..."
-    netsh advfirewall firewall add portopening TCP 5985 "Windows Remote Management"
+    netsh advfirewall firewall add rule name="Windows Remote Management" dir=in action=allow protocol=TCP localport=5985
 
     Write-Host "Stop WinRM service ..." 
     Stop-Service WinRM
+
     Write-Host "Enable WinRM Autostart ..."
     Set-Service WinRM -StartupType Automatic
+
     Write-Host "Start Win RM Service ..."
     Start-Service WinRM
+
+    Write-Host "Enabling HTTP port 80"
+    netsh advfirewall firewall add rule name="HTTP" dir=in action=allow protocol=TCP localport=80
+
+    Write-Host "Enabling SSL port 443
+    netsh advfirewall firewall add rule name="SSL" dir=in action=allow protocol=TCP localport=443"
 }
 
 #=================================================
 
-function Invoke-InitialSystemConfiguration {                
-  Write-Host "Show file extensions in Explorer ..." 
-  New-Item `
-    -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced `
-    -Name HideFileExt `
-    -Type DWord `
-    -Value 0 `
-    -Force | Out-Null
+function Invoke-InitialSystemConfiguration {
+    Push-Location
 
-  Write-Host "Enable QuickEdit mode ..."
-  New-Item `
-    -Path HKCU:\Console `
-    -Name QuickEdit `
-    -Type DWord `
-    -Value 1 `
-    -Force | Out-Null
+    Write-Host "Show file extensions in Explorer ..."
+    Set-Location HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    Set-ItemProperty . HideFileExt "0"
 
-  Write-Host "Show Run command in Start Menu ..."
-  New-Item `
-    -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced `
-    -Name Start_ShowRun `
-    -Type DWord `
-    -Value 1 `
-    -Force | Out-Null
+    Write-Host "Enable QuickEdit mode ..."
+    Set-Location HKCU:\Console
+    Set-ItemProperty . QuickEdit "1"
 
-  Write-Host "Show Administrative Tools in Start Menu ..."
-  New-Item `
-    -Path HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced `
-    -Name StartMenuAdminTools `
-    -Type DWord `
-    -Value 1 `
-    -Force | Out-Null
+    Write-Host "Show Administrative Tools in Start Menu ..."
+    Set-Location HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced
+    Set-ItemProperty . StartMenuAdminTools "1"
 
-  Write-Host "Zero Hibernation File ..."
-  New-Item `
-    -Path HKLM:\SYSTEM\CurrentControlSet\Control\Power `
-    -Name HibernateFileSizePercent `
-    -Type DWord `
-    -Value 0 `
-    -Force | Out-Null
+    Write-Host "Disable Hibernation ..."
+    Set-Location HKLM:\SYSTEM\CurrentControlSet\Control\Power
+    Set-ItemProperty . HibernateFileSizePercent "0"
+    Set-ItemProperty . HibernateEnabled "0"
 
-  Write-Host "Disable Hibernation Mode ..."
-  New-Item `
-    -Path HKLM:\SYSTEM\CurrentControlSet\Control\Power `
-    -Name HibernateEnabled `
-    -Type DWord `
-    -Value 0 `
-    -Force | Out-Null
+    Write-Host "Enable remote desktop ..."
+    Set-Location "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server"
+    Set-ItemProperty . fDenyTSConnections "0"
+    netsh advfirewall firewall add rule name="Open Port 3389" dir=in action=allow protocol=TCP localport=3389
 
-  Write-Host "Enable remote desktop ..."
-  New-Item `
-    -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server" `
-    -Name fDenyTSConnections `
-    -Type DWord `
-    -Value 0 `
-    -Force | Out-Null
-  netsh advfirewall firewall add rule name="Open Port 3389" dir=in action=allow protocol=TCP localport=3389
+    #Write-Host "Disable auto-logon ..."
+    #Set-Location "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon"
+    #Set-ItemProperty . AutoAdminLogon "0"
 
-  Write-Host "Disable auto-logon ..."
-  New-Item `
-    -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" `
-    -Name AutoAdminLogon `
-    -Type DWord `
-    -Value 0 `
-    -Force | Out-Null
-
+    Pop-Location
 }
 
 #=================================================
@@ -154,6 +130,25 @@ function Get-InstallFile {
 
 #=================================================
 
+function Remove-InstallFile {
+
+    [CmdletBinding()]
+    param (
+        [Parameter(mandatory=$true)]
+        [string[]] $FileList,
+        [Parameter(mandatory=$true)]
+        [System.IO.DirectoryInfo] $OutputDirectory
+    )
+
+    foreach ($item in $FileList) {
+        $OutItem = "{0}\$item" -F $OutputDirectory.FullName
+        Write-Host "Removing $OutItem ..."
+        Remove-Item $OutItem -Force
+    }
+}
+
+#=================================================
+
 function Invoke-WinExeInstall {                
     [CmdletBinding()]
     param (
@@ -191,7 +186,7 @@ function Invoke-WinMSIInstall {
         [System.IO.FileInfo] $Installer
     )
     
-    msiexec /qb /i $Installer.FullName
+    msiexec /qn /i $Installer.FullName
 }
 
 #=================================================

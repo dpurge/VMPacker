@@ -21,14 +21,14 @@
       "guest_os_type": "Windows2012_64",
       "disk_size": 61440,
       "floppy_files": [
-        "./floppy/Windows2012R2-mini/Autounattend.xml",
-        "./floppy/Windows2012R2-mini/Install.ps1",
+        "./floppy/Windows2012R2/Autounattend.xml",
+        "./floppy/Windows2012R2/Install.ps1",
         "./floppy/Common/InstallHelpers.psm1",
         "./floppy/VirtualBox/VMParams.ps1",
         "./floppy/VirtualBox/VMInstall.ps1"
       ],
       "vboxmanage": [
-        [ "modifyvm", "{{.Name}}", "--memory", "2048" ],
+        [ "modifyvm", "{{.Name}}", "--memory", "4096" ],
         [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
       ]
     }
