@@ -53,7 +53,7 @@ Other
 
 C:\"Program Files"\Oracle\VirtualBox\VBoxManage.exe createhd --filename C:\jdp\dat\vagrant\Windows2012R2-mini-virtualbox\virtualbox-mini-data-disk2.vmdk --size 62914560
 
-vagrant package –base VM_NAME_IN_VIRTUALBOX –output LOCATION_BOX_FILE
+vagrant package default –output LOCATION_BOX_FILE
 
 You can use the environment variable VAGRANT_HOME to specify the location of .vagrant.d
 
