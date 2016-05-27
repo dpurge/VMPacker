@@ -53,12 +53,15 @@ Other
 
 C:\"Program Files"\Oracle\VirtualBox\VBoxManage.exe createhd --filename C:\jdp\dat\vagrant\Windows2012R2-mini-virtualbox\virtualbox-mini-data-disk2.vmdk --size 62914560
 
-vagrant package default –output LOCATION_BOX_FILE
+```
+vagrant package default
+```
 
 You can use the environment variable VAGRANT_HOME to specify the location of .vagrant.d
 
 Add the configuration section of the vagrant file:
 
+```
 Vagrant.configure("2") do |config|
     ...
 
@@ -81,8 +84,9 @@ Vagrant.configure("2") do |config|
         end
     end
 end
+```
 
-
+```
 netsh advfirewall firewall add rule name="HTTP 80" dir=in action=allow protocol=TCP localport=80
 
 netsh advfirewall firewall add rule name="HTTPS 443" dir=in action=allow protocol=TCP localport=443
@@ -90,3 +94,4 @@ netsh advfirewall firewall add rule name="HTTPS 443" dir=in action=allow protoco
 netsh advfirewall firewall add rule name="HTTP 8080" dir=in action=allow protocol=TCP localport=8080
 
 Add-WindowsFeature Web-Basic-Auth
+```
